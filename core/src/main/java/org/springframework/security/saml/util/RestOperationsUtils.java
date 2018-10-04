@@ -40,7 +40,7 @@ public class RestOperationsUtils {
 	private final int connectTimeoutMillis;
 	private final int readTimeoutMillis;
 
-	RestOperationsUtils(int connectTimeoutMillis, int readTimeoutMillis) {
+	public RestOperationsUtils(int connectTimeoutMillis, int readTimeoutMillis) {
 		this.connectTimeoutMillis = connectTimeoutMillis;
 		this.readTimeoutMillis = readTimeoutMillis;
 	}
