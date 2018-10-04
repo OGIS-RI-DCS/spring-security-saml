@@ -15,20 +15,20 @@
  *
  */
 
-package org.springframework.security.saml.provider.config;
+package org.springframework.security.saml.provider.registration;
 
-public abstract class ExternalProviderConfiguration<T extends ExternalProviderConfiguration> {
+public abstract class AbstractExternalProviderConfiguration<T extends AbstractExternalProviderConfiguration> {
 	private final String alias;
 	private final String metadata;
 	private final String linktext;
 	private final boolean skipSslValidation;
 	private final boolean metadataTrustCheck;
 
-	public ExternalProviderConfiguration(String alias,
-										 String metadata,
-										 String linktext,
-										 boolean skipSslValidation,
-										 boolean metadataTrustCheck) {
+	public AbstractExternalProviderConfiguration(String alias,
+												 String metadata,
+												 String linktext,
+												 boolean skipSslValidation,
+												 boolean metadataTrustCheck) {
 		this.alias = alias;
 		this.metadata = metadata;
 		this.linktext = linktext;

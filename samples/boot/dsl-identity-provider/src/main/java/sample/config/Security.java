@@ -25,7 +25,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.saml.boot.RotatingKeys;
 import org.springframework.security.saml.boot.SamlKey;
 import org.springframework.security.saml.key.KeyType;
-import org.springframework.security.saml.provider.identity.config.ExternalServiceProviderConfiguration;
+import org.springframework.security.saml.provider.registration.ExternalServiceProviderConfiguration;
 import org.springframework.security.saml.provider.identity.config.SamlIdentityProviderSecurityConfiguration;
 import org.springframework.security.saml.saml2.metadata.NameId;
 

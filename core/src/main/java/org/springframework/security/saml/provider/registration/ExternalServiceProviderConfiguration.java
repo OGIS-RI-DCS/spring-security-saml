@@ -15,12 +15,10 @@
  *
  */
 
-package org.springframework.security.saml.provider.identity.config;
-
-import org.springframework.security.saml.provider.config.ExternalProviderConfiguration;
+package org.springframework.security.saml.provider.registration;
 
 public class ExternalServiceProviderConfiguration extends
-	ExternalProviderConfiguration<ExternalServiceProviderConfiguration> {
+	AbstractExternalProviderConfiguration<ExternalServiceProviderConfiguration> {
 	public ExternalServiceProviderConfiguration(String alias,
 												String metadata,
 												String linktext,

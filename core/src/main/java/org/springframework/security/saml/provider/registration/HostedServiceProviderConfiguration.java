@@ -15,18 +15,17 @@
  *
  */
 
-package org.springframework.security.saml.provider.service.config;
+package org.springframework.security.saml.provider.registration;
 
 import java.util.List;
 
 import org.springframework.security.saml.key.SimpleKey;
-import org.springframework.security.saml.provider.config.HostedProviderConfiguration;
 import org.springframework.security.saml.saml2.metadata.NameId;
 import org.springframework.security.saml.saml2.signature.AlgorithmMethod;
 import org.springframework.security.saml.saml2.signature.DigestMethod;
 
 public class HostedServiceProviderConfiguration extends
-	HostedProviderConfiguration<ExternalIdentityProviderConfiguration> {
+	AbstractHostedProviderConfiguration<ExternalIdentityProviderConfiguration> {
 
 	private final boolean signRequests;
 	private final boolean wantAssertionsSigned;

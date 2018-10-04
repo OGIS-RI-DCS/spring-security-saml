@@ -15,10 +15,9 @@
  *
  */
 
-package org.springframework.security.saml.provider.config;
+package org.springframework.security.saml.provider.registration;
 
-import org.springframework.security.saml.provider.identity.config.HostedIdentityProviderConfiguration;
-import org.springframework.security.saml.provider.service.config.HostedServiceProviderConfiguration;
+import org.springframework.security.saml.provider.config.NetworkConfiguration;
 
 /**
  * Represents a configuration for a hosted or domain.

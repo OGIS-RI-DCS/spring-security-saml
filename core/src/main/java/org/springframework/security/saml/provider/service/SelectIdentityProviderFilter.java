@@ -30,9 +30,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.saml.SamlRequestMatcher;
 import org.springframework.security.saml.provider.SamlFilter;
-import org.springframework.security.saml.provider.config.ExternalProviderConfiguration;
+import org.springframework.security.saml.provider.registration.AbstractExternalProviderConfiguration;
 import org.springframework.security.saml.provider.provisioning.SamlProviderProvisioning;
-import org.springframework.security.saml.provider.service.config.HostedServiceProviderConfiguration;
+import org.springframework.security.saml.provider.registration.HostedServiceProviderConfiguration;
 import org.springframework.security.saml.saml2.metadata.IdentityProviderMetadata;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -113,7 +113,7 @@ public class SelectIdentityProviderFilter extends SamlFilter<ServiceProviderServ
 
 	protected String getDiscoveryRedirect(ServiceProviderService provider,
 										  HttpServletRequest request,
-										  ExternalProviderConfiguration p) throws UnsupportedEncodingException {
+										  AbstractExternalProviderConfiguration p) throws UnsupportedEncodingException {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(
 			provider.getConfiguration().getBasePath()
 		);

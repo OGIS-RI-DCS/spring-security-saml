@@ -32,8 +32,8 @@ import org.springframework.security.saml.SamlProviderNotFoundException;
 import org.springframework.security.saml.SamlTransformer;
 import org.springframework.security.saml.SamlValidator;
 import org.springframework.security.saml.key.SimpleKey;
-import org.springframework.security.saml.provider.config.ExternalProviderConfiguration;
-import org.springframework.security.saml.provider.config.HostedProviderConfiguration;
+import org.springframework.security.saml.provider.registration.AbstractExternalProviderConfiguration;
+import org.springframework.security.saml.provider.registration.AbstractHostedProviderConfiguration;
 import org.springframework.security.saml.saml2.Saml2Object;
 import org.springframework.security.saml.saml2.authentication.Issuer;
 import org.springframework.security.saml.saml2.authentication.LogoutRequest;
@@ -59,7 +59,7 @@ import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 
 public abstract class AbstractHostedProviderService<
-	Configuration extends HostedProviderConfiguration,
+	Configuration extends AbstractHostedProviderConfiguration,
 	LocalMetadata extends Metadata<LocalMetadata>,
 	RemoteMetadata extends Metadata<RemoteMetadata>>
 	implements HostedProviderService<Configuration, LocalMetadata, RemoteMetadata> {
@@ -132,8 +132,8 @@ public abstract class AbstractHostedProviderService<
 	@Override
 	public List<RemoteMetadata> getRemoteProviders() {
 		List<RemoteMetadata> result = new LinkedList<>();
-		List<ExternalProviderConfiguration> providers = getConfiguration().getProviders();
-		for (ExternalProviderConfiguration c : providers) {
+		List<AbstractExternalProviderConfiguration> providers = getConfiguration().getProviders();
+		for (AbstractExternalProviderConfiguration c : providers) {
 			try {
 				RemoteMetadata m = getRemoteProvider(c);
 				if (m != null) {
@@ -210,7 +210,7 @@ public abstract class AbstractHostedProviderService<
 	}
 
 	@Override
-	public RemoteMetadata getRemoteProvider(ExternalProviderConfiguration c) {
+	public RemoteMetadata getRemoteProvider(AbstractExternalProviderConfiguration c) {
 		String metadata = c.getMetadata();
 		return resolve(metadata, c.isSkipSslValidation());
 	}

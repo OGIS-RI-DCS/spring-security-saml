@@ -19,8 +19,8 @@ package org.springframework.security.saml.provider;
 
 import java.util.List;
 
-import org.springframework.security.saml.provider.config.ExternalProviderConfiguration;
-import org.springframework.security.saml.provider.config.HostedProviderConfiguration;
+import org.springframework.security.saml.provider.registration.AbstractExternalProviderConfiguration;
+import org.springframework.security.saml.provider.registration.AbstractHostedProviderConfiguration;
 import org.springframework.security.saml.saml2.Saml2Object;
 import org.springframework.security.saml.saml2.authentication.LogoutRequest;
 import org.springframework.security.saml.saml2.authentication.LogoutResponse;
@@ -31,7 +31,7 @@ import org.springframework.security.saml.saml2.metadata.Metadata;
 import org.springframework.security.saml.validation.ValidationResult;
 
 public interface HostedProviderService<
-	Configuration extends HostedProviderConfiguration,
+	Configuration extends AbstractHostedProviderConfiguration,
 	LocalMetadata extends Metadata,
 	RemoteMetadata extends Metadata> {
 
@@ -51,7 +51,7 @@ public interface HostedProviderService<
 
 	RemoteMetadata getRemoteProvider(String entityId);
 
-	RemoteMetadata getRemoteProvider(ExternalProviderConfiguration c);
+	RemoteMetadata getRemoteProvider(AbstractExternalProviderConfiguration c);
 
 	ValidationResult validate(Saml2Object saml2Object);
 

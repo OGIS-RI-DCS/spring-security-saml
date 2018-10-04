@@ -29,14 +29,14 @@ import org.springframework.security.saml.SamlMetadataCache;
 import org.springframework.security.saml.SamlTransformer;
 import org.springframework.security.saml.SamlValidator;
 import org.springframework.security.saml.key.SimpleKey;
-import org.springframework.security.saml.provider.config.HostedProviderConfiguration;
+import org.springframework.security.saml.provider.registration.AbstractHostedProviderConfiguration;
 import org.springframework.security.saml.provider.config.SamlConfigurationRepository;
 import org.springframework.security.saml.provider.identity.HostedIdentityProviderService;
 import org.springframework.security.saml.provider.identity.IdentityProviderService;
-import org.springframework.security.saml.provider.identity.config.HostedIdentityProviderConfiguration;
+import org.springframework.security.saml.provider.registration.HostedIdentityProviderConfiguration;
 import org.springframework.security.saml.provider.service.HostedServiceProviderService;
 import org.springframework.security.saml.provider.service.ServiceProviderService;
-import org.springframework.security.saml.provider.service.config.HostedServiceProviderConfiguration;
+import org.springframework.security.saml.provider.registration.HostedServiceProviderConfiguration;
 import org.springframework.security.saml.saml2.metadata.Binding;
 import org.springframework.security.saml.saml2.metadata.Endpoint;
 import org.springframework.security.saml.saml2.metadata.IdentityProviderMetadata;
@@ -116,7 +116,7 @@ public abstract class AbstractHostbasedSamlProviderProvisioning {
 		);
 	}
 
-	protected String getAliasPath(HostedProviderConfiguration configuration) {
+	protected String getAliasPath(AbstractHostedProviderConfiguration configuration) {
 		try {
 			return hasText(configuration.getAlias()) ?
 				UriUtils.encode(configuration.getAlias(), StandardCharsets.ISO_8859_1.name()) :

@@ -17,12 +17,12 @@
 
 package org.springframework.security.saml.boot;
 
-import org.springframework.security.saml.provider.config.ExternalProviderConfiguration;
-import org.springframework.security.saml.provider.config.HostedProviderConfiguration;
-import org.springframework.security.saml.provider.identity.config.ExternalServiceProviderConfiguration;
-import org.springframework.security.saml.provider.identity.config.HostedIdentityProviderConfiguration;
-import org.springframework.security.saml.provider.service.config.ExternalIdentityProviderConfiguration;
-import org.springframework.security.saml.provider.service.config.HostedServiceProviderConfiguration;
+import org.springframework.security.saml.provider.registration.AbstractExternalProviderConfiguration;
+import org.springframework.security.saml.provider.registration.AbstractHostedProviderConfiguration;
+import org.springframework.security.saml.provider.registration.ExternalServiceProviderConfiguration;
+import org.springframework.security.saml.provider.registration.HostedIdentityProviderConfiguration;
+import org.springframework.security.saml.provider.registration.ExternalIdentityProviderConfiguration;
+import org.springframework.security.saml.provider.registration.HostedServiceProviderConfiguration;
 
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +44,7 @@ public class ToHostedConfigurationTests {
 		assertLocalSp(sp);
 	}
 
-	private void assertLocalParent(LocalProviderConfiguration lc, HostedProviderConfiguration hc) {
+	private void assertLocalParent(LocalProviderConfiguration lc, AbstractHostedProviderConfiguration hc) {
 		assertEquals(lc.getPrefix(), hc.getPrefix(), "prefix");
 		assertEquals(lc.getBasePath(), hc.getBasePath(), "basePath");
 		assertEquals(lc.getAlias(), hc.getAlias(), "alias");
@@ -87,7 +87,7 @@ public class ToHostedConfigurationTests {
 		assertEquals(lc.getDataEncryptionAlgorithm(), hc.getDataEncryptionAlgorithm(), "sessionNotOnOrAfter");
 	}
 
-	private void assertRemoteParent(RemoteProviderConfiguration rc, ExternalProviderConfiguration ec) {
+	private void assertRemoteParent(RemoteProviderConfiguration rc, AbstractExternalProviderConfiguration ec) {
 		assertEquals(rc.isSkipSslValidation(), ec.isSkipSslValidation(), "skipSslValidation");
 		assertEquals(rc.isMetadataTrustCheck(), ec.isMetadataTrustCheck(), "metadataTrustCheck");
 		assertEquals(rc.getAlias(), ec.getAlias(), "alias");

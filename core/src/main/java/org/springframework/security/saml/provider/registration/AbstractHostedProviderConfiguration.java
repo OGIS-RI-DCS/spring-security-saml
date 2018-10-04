@@ -15,7 +15,7 @@
  *
  */
 
-package org.springframework.security.saml.provider.config;
+package org.springframework.security.saml.provider.registration;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,8 +27,8 @@ import org.springframework.security.saml.saml2.signature.DigestMethod;
 
 import static org.springframework.util.StringUtils.hasText;
 
-public class HostedProviderConfiguration
-	<ExternalConfiguration extends ExternalProviderConfiguration<ExternalConfiguration>> {
+public abstract class AbstractHostedProviderConfiguration
+	<ExternalConfiguration extends AbstractExternalProviderConfiguration<ExternalConfiguration>> {
 
 	private final String prefix;
 	private final String basePath;
@@ -43,18 +43,18 @@ public class HostedProviderConfiguration
 	private final boolean singleLogoutEnabled;
 	private final List<ExternalConfiguration> providers;
 
-	public HostedProviderConfiguration(String prefix,
-									   String basePath,
-									   String alias,
-									   String entityId,
-									   boolean signMetadata,
-									   String metadata,
-									   List<SimpleKey> keys,
-									   AlgorithmMethod defaultSigningAlgorithm,
-									   DigestMethod defaultDigest,
-									   List<NameId> nameIds,
-									   boolean singleLogoutEnabled,
-									   List<ExternalConfiguration> providers) {
+	public AbstractHostedProviderConfiguration(String prefix,
+											   String basePath,
+											   String alias,
+											   String entityId,
+											   boolean signMetadata,
+											   String metadata,
+											   List<SimpleKey> keys,
+											   AlgorithmMethod defaultSigningAlgorithm,
+											   DigestMethod defaultDigest,
+											   List<NameId> nameIds,
+											   boolean singleLogoutEnabled,
+											   List<ExternalConfiguration> providers) {
 		this.prefix = prefix;
 		this.basePath = basePath;
 		this.alias = alias;
