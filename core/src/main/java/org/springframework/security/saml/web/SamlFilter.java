@@ -15,7 +15,7 @@
  *
  */
 
-package org.springframework.security.saml.provider;
+package org.springframework.security.saml.web;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.saml.SamlException;
 import org.springframework.security.saml.SamlTemplateEngine;
+import org.springframework.security.saml.provider.HostedProviderService;
 import org.springframework.security.saml.provider.provisioning.SamlProviderProvisioning;
 import org.springframework.security.saml.spi.opensaml.OpenSamlVelocityEngine;
 import org.springframework.security.web.header.HeaderWriter;

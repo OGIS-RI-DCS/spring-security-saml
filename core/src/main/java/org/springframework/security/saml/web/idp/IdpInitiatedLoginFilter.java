@@ -15,7 +15,7 @@
  *
  */
 
-package org.springframework.security.saml.provider.identity;
+package org.springframework.security.saml.web.idp;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -31,7 +31,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.saml.SamlException;
 import org.springframework.security.saml.SamlMessageStore;
 import org.springframework.security.saml.SamlRequestMatcher;
-import org.springframework.security.saml.provider.SamlFilter;
+import org.springframework.security.saml.provider.identity.IdentityProviderService;
+import org.springframework.security.saml.web.SamlFilter;
 import org.springframework.security.saml.provider.provisioning.SamlProviderProvisioning;
 import org.springframework.security.saml.saml2.authentication.Assertion;
 import org.springframework.security.saml.saml2.authentication.AuthenticationRequest;

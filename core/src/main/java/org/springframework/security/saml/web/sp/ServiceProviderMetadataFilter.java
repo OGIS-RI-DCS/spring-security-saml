@@ -15,25 +15,26 @@
  *
  */
 
-package org.springframework.security.saml.provider.identity;
+package org.springframework.security.saml.web.sp;
 
-import org.springframework.security.saml.provider.SamlMetadataFilter;
+import org.springframework.security.saml.provider.service.ServiceProviderService;
+import org.springframework.security.saml.web.SamlMetadataFilter;
 import org.springframework.security.saml.provider.provisioning.SamlProviderProvisioning;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-public class IdentityProviderMetadataFilter extends SamlMetadataFilter<IdentityProviderService> {
-	public IdentityProviderMetadataFilter(SamlProviderProvisioning<IdentityProviderService> provisioning) {
-		this(provisioning, "saml-idp-metadata.xml");
+public class ServiceProviderMetadataFilter extends SamlMetadataFilter<ServiceProviderService> {
+	public ServiceProviderMetadataFilter(SamlProviderProvisioning<ServiceProviderService> provisioning) {
+		this(provisioning, "saml-sp-metadata.xml");
 	}
 
-	public IdentityProviderMetadataFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
-										  String filename) {
+	public ServiceProviderMetadataFilter(SamlProviderProvisioning<ServiceProviderService> provisioning,
+										 String filename) {
 		super(provisioning, filename);
 	}
 
-	public IdentityProviderMetadataFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
-										  RequestMatcher requestMatcher,
-										  String filename) {
+	public ServiceProviderMetadataFilter(SamlProviderProvisioning<ServiceProviderService> provisioning,
+										 RequestMatcher requestMatcher,
+										 String filename) {
 		super(provisioning, requestMatcher, filename);
 	}
 }

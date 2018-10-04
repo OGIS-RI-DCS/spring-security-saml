@@ -15,7 +15,7 @@
  *
  */
 
-package org.springframework.security.saml.provider;
+package org.springframework.security.saml.web;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.saml.SamlRequestMatcher;
+import org.springframework.security.saml.provider.HostedProviderService;
 import org.springframework.security.saml.provider.provisioning.SamlProviderProvisioning;
 import org.springframework.security.saml.saml2.metadata.Metadata;
 import org.springframework.security.web.util.matcher.RequestMatcher;

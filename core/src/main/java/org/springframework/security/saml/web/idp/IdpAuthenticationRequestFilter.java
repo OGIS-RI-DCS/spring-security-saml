@@ -15,13 +15,14 @@
  *
  */
 
-package org.springframework.security.saml.provider.identity;
+package org.springframework.security.saml.web.idp;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.security.saml.SamlMessageStore;
 import org.springframework.security.saml.SamlRequestMatcher;
+import org.springframework.security.saml.provider.identity.IdentityProviderService;
 import org.springframework.security.saml.provider.provisioning.SamlProviderProvisioning;
 import org.springframework.security.saml.saml2.authentication.Assertion;
 import org.springframework.security.saml.saml2.authentication.AuthenticationRequest;

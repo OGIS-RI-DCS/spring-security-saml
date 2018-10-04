@@ -30,6 +30,7 @@ import org.springframework.security.saml.spi.DefaultValidator;
 import org.springframework.security.saml.spi.SpringSecuritySaml;
 import org.springframework.security.saml.spi.opensaml.OpenSamlImplementation;
 import org.springframework.security.saml.spi.opensaml.OpenSamlVelocityEngine;
+import org.springframework.security.saml.util.RestOperationsUtils;
 import org.springframework.web.client.RestOperations;
 
 /**
@@ -77,11 +78,11 @@ public class SamlServerBeanConfiguration {
 	}
 
 	public RestOperations samlValidatingNetworkHandler() {
-		return new Network(4000, 8000).get(false);
+		return new RestOperationsUtils(4000, 8000).get(false);
 	}
 
 	public RestOperations samlNonValidatingNetworkHandler() {
-		return new Network(4000, 8000).get(true);
+		return new RestOperationsUtils(4000, 8000).get(true);
 	}
 
 }

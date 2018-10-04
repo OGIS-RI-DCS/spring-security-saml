@@ -15,7 +15,7 @@
  *
  */
 
-package org.springframework.security.saml.provider;
+package org.springframework.security.saml.web;
 
 import java.io.IOException;
 import java.util.LinkedList;

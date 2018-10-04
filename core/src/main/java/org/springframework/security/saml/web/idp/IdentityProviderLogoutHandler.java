@@ -15,7 +15,7 @@
  *
  */
 
-package org.springframework.security.saml.provider.identity;
+package org.springframework.security.saml.web.idp;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -29,7 +29,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.saml.SamlException;
 import org.springframework.security.saml.SamlMessageStore;
-import org.springframework.security.saml.provider.SamlLogoutSuccessHandler;
+import org.springframework.security.saml.provider.identity.IdentityProviderService;
+import org.springframework.security.saml.web.SamlLogoutSuccessHandler;
 import org.springframework.security.saml.provider.provisioning.SamlProviderProvisioning;
 import org.springframework.security.saml.saml2.Saml2Object;
 import org.springframework.security.saml.saml2.authentication.Assertion;
@@ -49,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
 import static java.lang.Boolean.TRUE;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
-import static org.springframework.security.saml.provider.SamlLogoutSuccessHandler.RUN_SUCCESS;
+import static org.springframework.security.saml.web.SamlLogoutSuccessHandler.RUN_SUCCESS;
 import static org.springframework.util.StringUtils.hasText;
 
 public class IdentityProviderLogoutHandler implements LogoutHandler {

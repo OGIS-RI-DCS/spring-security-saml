@@ -29,7 +29,7 @@ public class ThreadLocalSamlConfigurationRepository
 		return getServerConfiguration(null);
 	}
 
-	protected void setServerConfiguration(SamlServerConfiguration configuration) {
+	public void setServerConfiguration(SamlServerConfiguration configuration) {
 		if (configuration == null) {
 			reset();
 		}

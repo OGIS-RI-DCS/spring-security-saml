@@ -15,7 +15,7 @@
  *
  */
 
-package org.springframework.security.saml.provider.identity;
+package org.springframework.security.saml.web.idp;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -30,7 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.saml.SamlRequestMatcher;
-import org.springframework.security.saml.provider.SamlFilter;
+import org.springframework.security.saml.provider.identity.IdentityProviderService;
+import org.springframework.security.saml.web.SamlFilter;
 import org.springframework.security.saml.provider.registration.AbstractExternalProviderConfiguration;
 import org.springframework.security.saml.provider.registration.HostedIdentityProviderConfiguration;
 import org.springframework.security.saml.provider.provisioning.SamlProviderProvisioning;
