@@ -27,7 +27,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.security.saml.SamlRequestMatcher;
+import org.springframework.security.saml.web.SamlRequestMatcher;
 import org.springframework.security.saml.provider.service.ServiceProviderService;
 import org.springframework.security.saml.web.SamlFilter;
 import org.springframework.security.saml.provider.provisioning.SamlProviderProvisioning;

@@ -19,7 +19,7 @@ package org.springframework.security.saml.provider.service;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.security.saml.SamlRequestMatcher;
+import org.springframework.security.saml.web.SamlRequestMatcher;
 import org.springframework.security.saml.provider.HostedProviderService;
 import org.springframework.security.saml.provider.registration.AbstractHostedProviderConfiguration;
 import org.springframework.security.saml.provider.provisioning.SamlProviderProvisioning;

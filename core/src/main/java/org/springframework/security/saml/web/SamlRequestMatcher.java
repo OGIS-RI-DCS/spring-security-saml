@@ -15,7 +15,7 @@
  *
  */
 
-package org.springframework.security.saml;
+package org.springframework.security.saml.web;
 
 import javax.servlet.http.HttpServletRequest;
 
