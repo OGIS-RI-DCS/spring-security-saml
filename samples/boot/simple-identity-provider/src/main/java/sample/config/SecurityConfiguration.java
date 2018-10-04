@@ -23,7 +23,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.saml.provider.identity.config.SamlIdentityProviderSecurityConfiguration;
 
 import static org.springframework.security.saml.provider.identity.config.SamlIdentityProviderSecurityDsl.identityProvider;
 
@@ -32,13 +31,12 @@ public class SecurityConfiguration {
 
 	@Configuration
 	@Order(1)
-	public static class SamlSecurity extends SamlIdentityProviderSecurityConfiguration {
+	public static class SamlSecurity extends WebSecurityConfigurerAdapter {
 
 		private final AppConfig appConfig;
 		private final BeanConfig beanConfig;
 
 		public SamlSecurity(BeanConfig beanConfig, @Qualifier("appConfig") AppConfig appConfig) {
-			super("/saml/idp/", beanConfig);
 			this.appConfig = appConfig;
 			this.beanConfig = beanConfig;
 		}

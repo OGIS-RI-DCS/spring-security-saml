@@ -29,13 +29,20 @@ import org.springframework.security.saml.provider.config.ThreadLocalSamlConfigur
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.util.Assert;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import static org.springframework.security.saml.util.StringUtils.stripSlashes;
+
 public class SamlServiceProviderSecurityDsl
 	extends AbstractHttpConfigurer<SamlServiceProviderSecurityDsl, HttpSecurity> {
+
+	private static Log logger = LogFactory.getLog(SamlServiceProviderSecurityDsl.class);
 
 	private boolean useStandardFilterConfiguration = true;
 	private List<Filter> filters = new LinkedList<>();
 	private SamlConfigurationRepository samlConfigurationRepository;
-
+	private String prefix = "/saml/sp";
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
@@ -46,6 +53,13 @@ public class SamlServiceProviderSecurityDsl
 		ThreadLocalSamlConfigurationRepository repository =
 			new ThreadLocalSamlConfigurationRepository(samlConfigurationRepository);
 
+		String filterChainPattern = "/" + stripSlashes(prefix) + "/**";
+		logger.info("Configuring SAML SP on pattern:"+filterChainPattern);
+		http
+			.antMatcher(filterChainPattern)
+			.csrf().disable()
+			.authorizeRequests()
+			.antMatchers("/**").permitAll();
 
 		if (useStandardFilterConfiguration) {
 			SamlServiceProviderServerBeanConfiguration spBeanConfig =
@@ -105,7 +119,13 @@ public class SamlServiceProviderSecurityDsl
 		return new SamlServiceProviderSecurityDsl();
 	}
 
-	public void configurationRepository(SamlConfigurationRepository samlConfigurationRepository) {
+	public SamlServiceProviderSecurityDsl configurationRepository(SamlConfigurationRepository samlConfigurationRepository) {
 		this.samlConfigurationRepository = samlConfigurationRepository;
+		return this;
+	}
+
+	public SamlServiceProviderSecurityDsl prefix(String prefix) {
+		this.prefix = prefix;
+		return this;
 	}
 }

@@ -27,6 +27,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.saml.key.SimpleKey;
 import org.springframework.security.saml.provider.registration.ExternalServiceProviderConfiguration;
 import org.springframework.security.saml.provider.registration.SamlServerConfiguration;
+import org.springframework.security.saml.provider.service.config.SamlServiceProviderSecurityDsl;
 import org.springframework.security.saml.saml2.encrypt.DataEncryptionMethod;
 import org.springframework.security.saml.saml2.encrypt.KeyEncryptionMethod;
 import org.springframework.security.saml.saml2.metadata.NameId;
@@ -34,8 +35,15 @@ import org.springframework.security.saml.saml2.signature.AlgorithmMethod;
 import org.springframework.security.saml.saml2.signature.DigestMethod;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import static org.springframework.security.saml.util.StringUtils.stripSlashes;
+
 public class SamlIdentityProviderSecurityDsl
 	extends AbstractHttpConfigurer<SamlIdentityProviderSecurityDsl, HttpSecurity> {
+
+	private static Log logger = LogFactory.getLog(SamlServiceProviderSecurityDsl.class);
 
 	private String prefix = "saml/idp/";
 	private boolean useStandardFilterConfiguration = true;
@@ -76,6 +84,16 @@ public class SamlIdentityProviderSecurityDsl
 
 		SamlServerConfiguration serverConfig = context.getBean("idpSamlServerConfiguration",SamlServerConfiguration.class);
 		serverConfig.transfer(this.configuration);
+
+		String filterChainPattern = "/" + stripSlashes(prefix) + "/**";
+		logger.info("Configuring SAML IDP on patther:"+filterChainPattern);
+		http
+			.antMatcher(filterChainPattern)
+			.csrf().disable()
+			.authorizeRequests()
+			.antMatchers("/metadata").permitAll()
+			.antMatchers("/**").authenticated()
+			.and();
 
 		if (useStandardFilterConfiguration) {
 			SamlIdentityProviderServerBeanConfiguration beanConfig =
@@ -119,7 +137,6 @@ public class SamlIdentityProviderSecurityDsl
 	}
 
 	public SamlIdentityProviderSecurityDsl prefix(String prefix) {
-//		configuration.getIdentityProvider().setPrefix(prefix);
 		this.prefix = prefix;
 		return this;
 	}
@@ -211,5 +228,6 @@ public class SamlIdentityProviderSecurityDsl
 	public static SamlIdentityProviderSecurityDsl identityProvider() {
 		return new SamlIdentityProviderSecurityDsl();
 	}
+
 
 }

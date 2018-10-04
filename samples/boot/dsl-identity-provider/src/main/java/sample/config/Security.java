@@ -26,7 +26,6 @@ import org.springframework.security.saml.boot.RotatingKeys;
 import org.springframework.security.saml.boot.SamlKey;
 import org.springframework.security.saml.key.KeyType;
 import org.springframework.security.saml.provider.registration.ExternalServiceProviderConfiguration;
-import org.springframework.security.saml.provider.identity.config.SamlIdentityProviderSecurityConfiguration;
 import org.springframework.security.saml.saml2.metadata.NameId;
 
 import static java.util.Arrays.asList;
@@ -41,25 +40,23 @@ public class Security {
 
 	@Configuration
 	@Order(1)
-	public static class SamlSecurity extends SamlIdentityProviderSecurityConfiguration {
+	public static class SamlSecurity extends WebSecurityConfigurerAdapter {
 
 		private final BeanConfig beanConfig;
 
 		public SamlSecurity(BeanConfig configuration) {
-			super("/saml/dsl-idp-prefix/", configuration);
 			this.beanConfig = configuration;
 		}
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-			String prefix = getPrefix();
 			super.configure(http);
 			//we want to use the FORM when accessing the SAML SSO endpoint
 			http
 				.userDetailsService(beanConfig.userDetailsService()).formLogin();
 
 			http.apply(identityProvider())
-				.prefix(prefix)
+				.prefix("/saml/dsl-idp-prefix/")
 				.useStandardFilters()
 				.entityId("spring.security.saml.dsl.id")
 				.alias("boot-dsl-idp")

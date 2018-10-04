@@ -26,7 +26,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.saml.provider.config.SamlConfigurationRepository;
 import org.springframework.security.saml.provider.config.SamlServerBeanConfiguration;
-import org.springframework.security.saml.provider.service.config.SamlServiceProviderSecurityConfiguration;
 import org.springframework.security.saml.provider.service.config.SamlServiceProviderSecurityDsl;
 
 import static org.springframework.security.saml.provider.service.config.SamlServiceProviderSecurityDsl.serviceProvider;
@@ -42,7 +41,6 @@ public class SecurityConfiguration {
 
 	@Configuration
 	@Order(1)
-	@Import(SamlServiceProviderSecurityConfiguration.class)
 	public class SamlSecurity extends WebSecurityConfigurerAdapter {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
