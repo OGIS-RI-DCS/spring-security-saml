@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.saml.provider.config.SamlServerConfiguration;
 import org.springframework.security.saml.provider.service.config.ExternalIdentityProviderConfiguration;
 import org.springframework.security.saml.saml2.metadata.NameId;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -32,6 +33,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import sample.config.StaticSpConfigurationRepository;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -51,14 +53,15 @@ public class SelectIdentityProviderBootTest {
 	private String spBaseUrl;
 
 	@Autowired
-	private AppConfig config;
+	private StaticSpConfigurationRepository repository;
 
 	private List<ExternalIdentityProviderConfiguration> providers;
 
 	@BeforeEach
 	void setUp() {
+		SamlServerConfiguration config = repository.getDefaultServerConfiguration();
 		idpEntityId = "http://dual.sp-idp.com/saml/idp/metadata";
-		providers = config.toSamlServerConfiguration().getServiceProvider().getProviders();
+		providers = config.getServiceProvider().getProviders();
 		List<ExternalIdentityProviderConfiguration> newConfig = new ArrayList<>(providers);
 		newConfig.add(
 			new ExternalIdentityProviderConfiguration(
@@ -76,9 +79,8 @@ public class SelectIdentityProviderBootTest {
 			throw new UnsupportedOperationException();
 		}
 //		config.getServiceProvider().setProviders(newConfig);
-
-		spBaseUrl = "http://localhost";
-		config.getServiceProvider().setBasePath(spBaseUrl);
+//		spBaseUrl = "http://localhost";
+//		config.getServiceProvider().setBasePath(spBaseUrl);
 	}
 
 	@AfterEach
