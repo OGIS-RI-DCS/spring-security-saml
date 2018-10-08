@@ -220,4 +220,17 @@ public class Assertion extends ImplementationHolder {
 	public DataEncryptionMethod getDataAlgorithm() {
 		return dataAlgorithm;
 	}
+
+	@Override
+	public String getOriginEntityId() {
+		if (issuer != null) {
+			return issuer.getValue();
+		}
+		return null;
+	}
+
+	@Override
+	public String getDestinationEntityId() {
+		return null;
+	}
 }
