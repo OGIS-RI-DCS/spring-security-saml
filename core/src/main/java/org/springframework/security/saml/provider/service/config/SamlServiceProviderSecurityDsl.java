@@ -17,16 +17,28 @@
 
 package org.springframework.security.saml.provider.service.config;
 
+import java.time.Clock;
 import java.util.LinkedList;
 import java.util.List;
 import javax.servlet.Filter;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.saml.SamlMetadataCache;
+import org.springframework.security.saml.SamlTransformer;
 import org.springframework.security.saml.provider.config.SamlConfigurationRepository;
-import org.springframework.security.saml.provider.config.ThreadLocalSamlConfigurationRepository;
+import org.springframework.security.saml.provider.onion.sp.DefaultServiceProviderResolver;
+import org.springframework.security.saml.provider.onion.sp.SamlServiceProviderResolvingFilter;
+import org.springframework.security.saml.provider.onion.sp.ServiceProviderMetadataFilter;
+import org.springframework.security.saml.provider.registration.SamlServerConfiguration;
+import org.springframework.security.saml.spi.DefaultMetadataCache;
+import org.springframework.security.saml.spi.DefaultSamlTransformer;
+import org.springframework.security.saml.spi.opensaml.OpenSamlImplementation;
+import org.springframework.security.saml.util.RestOperationsUtils;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.Assert;
 
 import org.apache.commons.logging.Log;
@@ -45,59 +57,58 @@ public class SamlServiceProviderSecurityDsl
 	private String prefix = "/saml/sp";
 
 	@Override
+	public void init(HttpSecurity builder) throws Exception {
+		super.init(builder);
+		String filterChainPattern = "/" + stripSlashes(prefix) + "/**";
+		logger.info("Configuring SAML SP on pattern:" + filterChainPattern);
+		builder
+			.antMatcher(filterChainPattern)
+			.csrf().disable()
+			.authorizeRequests()
+			.antMatchers("/**").permitAll();
+	}
+
+	@Override
 	public void configure(HttpSecurity http) throws Exception {
 		Assert.notNull(samlConfigurationRepository, "SamlConfigurationRepository must be set.");
 
 		ApplicationContext context = http.getSharedObject(ApplicationContext.class);
 
-		ThreadLocalSamlConfigurationRepository repository =
-			new ThreadLocalSamlConfigurationRepository(samlConfigurationRepository);
+		OpenSamlImplementation saml = new OpenSamlImplementation(Clock.systemUTC()).init();
+		SamlTransformer transformer = new DefaultSamlTransformer(saml);
+		RestOperationsUtils restOperations = new RestOperationsUtils(4000, 4000);
+		SamlMetadataCache cache = new DefaultMetadataCache(
+			Clock.systemUTC(),
+			restOperations.get(false),
+			restOperations.get(true)
+		);
 
-		String filterChainPattern = "/" + stripSlashes(prefix) + "/**";
-		logger.info("Configuring SAML SP on pattern:"+filterChainPattern);
-		http
-			.antMatcher(filterChainPattern)
-			.csrf().disable()
-			.authorizeRequests()
-			.antMatchers("/**").permitAll();
+		DefaultServiceProviderResolver resolver = new DefaultServiceProviderResolver(cache, transformer) {
+			@Override
+			protected SamlServerConfiguration getConfiguration(HttpServletRequest request) {
+				return samlConfigurationRepository.getDefaultServerConfiguration();
+			}
+		};
+
 
 		if (useStandardFilterConfiguration) {
-			SamlServiceProviderServerBeanConfiguration spBeanConfig =
-				context.getBean(SamlServiceProviderServerBeanConfiguration.class);
-			Filter samlConfigurationFilter = spBeanConfig.samlConfigurationFilter();
-			Filter metadataFilter = spBeanConfig.spMetadataFilter();
-			Filter spAuthenticationRequestFilter = spBeanConfig.spAuthenticationRequestFilter();
-			Filter spAuthenticationResponseFilter = spBeanConfig.spAuthenticationResponseFilter();
-			Filter spSamlLogoutFilter = spBeanConfig.spSamlLogoutFilter();
-			Filter spSelectIdentityProviderFilter = spBeanConfig.spSelectIdentityProviderFilter();
+			SamlServiceProviderResolvingFilter resolvingFilter = new SamlServiceProviderResolvingFilter(
+				new AntPathRequestMatcher("/"+stripSlashes(prefix)+"/**"),
+				resolver
+			);
+			ServiceProviderMetadataFilter metadataFilter = new ServiceProviderMetadataFilter(transformer);
+
 			http
 				.addFilterAfter(
-					samlConfigurationFilter,
+					resolvingFilter,
 					BasicAuthenticationFilter.class
 				)
 				.addFilterAfter(
 					metadataFilter,
-					samlConfigurationFilter.getClass()
-				)
-				.addFilterAfter(
-					spAuthenticationRequestFilter,
-					metadataFilter.getClass()
-				)
-				.addFilterAfter(
-					spAuthenticationResponseFilter,
-					spAuthenticationRequestFilter.getClass()
-				)
-				.addFilterAfter(
-					spSamlLogoutFilter,
-					spAuthenticationResponseFilter.getClass()
-				)
-				.addFilterAfter(
-					spSelectIdentityProviderFilter,
-					spSamlLogoutFilter.getClass()
+					resolvingFilter.getClass()
 				);
 		}
 	}
-
 
 
 	public SamlServiceProviderSecurityDsl useStandardFilters() {

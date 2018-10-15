@@ -20,9 +20,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SimpleServiceProviderApplication {
+public class OnionServiceProviderApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SimpleServiceProviderApplication.class, args);
+		SpringApplication.run(OnionServiceProviderApplication.class, args);
 	}
 }

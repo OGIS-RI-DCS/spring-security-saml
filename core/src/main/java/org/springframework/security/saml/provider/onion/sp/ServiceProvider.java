@@ -17,15 +17,39 @@
 
 package org.springframework.security.saml.provider.onion.sp;
 
-import org.springframework.security.saml.provider.onion.HostedProvider;
+import java.util.Map;
+
 import org.springframework.security.saml.provider.registration.ExternalIdentityProviderConfiguration;
 import org.springframework.security.saml.provider.registration.HostedServiceProviderConfiguration;
 import org.springframework.security.saml.saml2.metadata.IdentityProviderMetadata;
 import org.springframework.security.saml.saml2.metadata.ServiceProviderMetadata;
 
-public interface HostedServiceProvider extends HostedProvider<
-	HostedServiceProviderConfiguration,
-	ServiceProviderMetadata,
-	ExternalIdentityProviderConfiguration,
-	IdentityProviderMetadata> {
+public class ServiceProvider implements HostedServiceProvider {
+
+	private final HostedServiceProviderConfiguration configuration;
+	private final ServiceProviderMetadata metadata;
+	private final Map<ExternalIdentityProviderConfiguration, IdentityProviderMetadata> identityProviders;
+
+	public ServiceProvider(HostedServiceProviderConfiguration configuration,
+						   ServiceProviderMetadata metadata,
+						   Map<ExternalIdentityProviderConfiguration, IdentityProviderMetadata> identityProviders) {
+		this.configuration = configuration;
+		this.metadata = metadata;
+		this.identityProviders = identityProviders;
+	}
+
+	@Override
+	public HostedServiceProviderConfiguration getConfiguration() {
+		return this.configuration;
+	}
+
+	@Override
+	public ServiceProviderMetadata getMetadata() {
+		return this.metadata;
+	}
+
+	@Override
+	public Map<ExternalIdentityProviderConfiguration, IdentityProviderMetadata> getRemoteProviders() {
+		return this.identityProviders;
+	}
 }

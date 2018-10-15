@@ -18,13 +18,14 @@
 package org.springframework.security.saml.provider.onion.idp;
 
 import org.springframework.security.saml.provider.onion.HostedProvider;
+import org.springframework.security.saml.provider.registration.ExternalServiceProviderConfiguration;
 import org.springframework.security.saml.provider.registration.HostedIdentityProviderConfiguration;
 import org.springframework.security.saml.saml2.metadata.IdentityProviderMetadata;
 import org.springframework.security.saml.saml2.metadata.ServiceProviderMetadata;
 
-public interface HostedIdentityProvider
-	extends HostedProvider<
-		HostedIdentityProviderConfiguration,
-		IdentityProviderMetadata,
-		ServiceProviderMetadata> {
+public interface HostedIdentityProvider extends HostedProvider<
+	HostedIdentityProviderConfiguration,
+	IdentityProviderMetadata,
+	ExternalServiceProviderConfiguration,
+	ServiceProviderMetadata> {
 }

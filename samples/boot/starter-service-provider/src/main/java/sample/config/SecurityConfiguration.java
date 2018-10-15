@@ -46,6 +46,7 @@ public class SecurityConfiguration {
 		protected void configure(HttpSecurity http) throws Exception {
 			SamlServiceProviderSecurityDsl configurer = serviceProvider();
 			configurer
+				.prefix("saml/test")
 				.configurationRepository(configurationRepository());
 			http.apply(configurer);
 		}

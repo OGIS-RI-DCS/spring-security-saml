@@ -20,6 +20,7 @@ package sample.config;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.saml.key.KeyType;
 import org.springframework.security.saml.key.SimpleKey;
 import org.springframework.security.saml.provider.config.NetworkConfiguration;
@@ -33,6 +34,7 @@ import org.springframework.security.saml.saml2.signature.DigestMethod;
 
 import static java.util.Arrays.asList;
 
+@Configuration
 public class StaticSpConfigurationRepository implements SamlConfigurationRepository<HttpServletRequest> {
 	@Override
 	public SamlServerConfiguration getServerConfiguration(HttpServletRequest request) {

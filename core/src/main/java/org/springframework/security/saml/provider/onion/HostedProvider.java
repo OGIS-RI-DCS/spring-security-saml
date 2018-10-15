@@ -17,20 +17,22 @@
 
 package org.springframework.security.saml.provider.onion;
 
-import java.util.List;
+import java.util.Map;
 
+import org.springframework.security.saml.provider.registration.AbstractExternalProviderConfiguration;
 import org.springframework.security.saml.provider.registration.AbstractHostedProviderConfiguration;
 import org.springframework.security.saml.saml2.metadata.Metadata;
 
 public interface HostedProvider<
 	Configuration extends AbstractHostedProviderConfiguration,
 	LocalMetadata extends Metadata,
+	RemoteConfiguration extends AbstractExternalProviderConfiguration,
 	RemoteMetadata extends Metadata> {
 
 	Configuration getConfiguration();
 
 	LocalMetadata getMetadata();
 
-	List<RemoteMetadata> getRemoteProviders();
+	Map<RemoteConfiguration,RemoteMetadata> getRemoteProviders();
 
 }

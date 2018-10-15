@@ -79,7 +79,7 @@ public abstract class SamlProcessingFilter<T extends HostedProvider> extends Onc
 										 T provider,
 										 HttpServletRequest request,
 										 HttpServletResponse response,
-										 FilterChain filterChain);
+										 FilterChain filterChain) throws ServletException, IOException;
 
 	public String getErrorTemplate() {
 		return errorTemplate;
