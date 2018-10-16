@@ -22,6 +22,7 @@ import java.util.Map;
 import org.springframework.security.saml.provider.registration.AbstractExternalProviderConfiguration;
 import org.springframework.security.saml.provider.registration.AbstractHostedProviderConfiguration;
 import org.springframework.security.saml.saml2.metadata.Metadata;
+import org.springframework.util.Assert;
 
 public interface HostedProvider<
 	Configuration extends AbstractHostedProviderConfiguration,
@@ -29,10 +30,21 @@ public interface HostedProvider<
 	RemoteConfiguration extends AbstractExternalProviderConfiguration,
 	RemoteMetadata extends Metadata> {
 
+	String PROVIDER_ATTRIBUTE = HostedProvider.class.getName()+".provider";
+
 	Configuration getConfiguration();
 
 	LocalMetadata getMetadata();
 
 	Map<RemoteConfiguration,RemoteMetadata> getRemoteProviders();
+
+	default RemoteMetadata getRemoteProvider(String entityId) {
+		Assert.notNull(entityId, "Entity ID can not be null");
+		return getRemoteProviders().entrySet().stream()
+			.map(e -> e.getValue())
+			.filter(p -> entityId.equals(p.getEntityId()))
+			.findFirst()
+			.orElse(null);
+	}
 
 }

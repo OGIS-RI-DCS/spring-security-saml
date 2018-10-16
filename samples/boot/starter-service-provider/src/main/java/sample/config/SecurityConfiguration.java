@@ -17,42 +17,43 @@
 
 package sample.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.saml.provider.config.SamlConfigurationRepository;
-import org.springframework.security.saml.provider.config.SamlServerBeanConfiguration;
 import org.springframework.security.saml.provider.service.config.SamlServiceProviderSecurityDsl;
 
 import static org.springframework.security.saml.provider.service.config.SamlServiceProviderSecurityDsl.serviceProvider;
 
 @EnableWebSecurity
-@Import(SamlServerBeanConfiguration.class)
+@Configuration
 public class SecurityConfiguration {
 
-	@Bean
-	public SamlConfigurationRepository configurationRepository() {
-		return new StaticSpConfigurationRepository();
-	}
 
 	@Configuration
 	@Order(1)
 	public class SamlSecurity extends WebSecurityConfigurerAdapter {
+
+		private final SamlConfigurationRepository repository;
+
+		public SamlSecurity(SamlConfigurationRepository repository) {
+			this.repository = repository;
+		}
+
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			SamlServiceProviderSecurityDsl configurer = serviceProvider();
 			configurer
-				.prefix("saml/test")
-				.configurationRepository(configurationRepository());
+				.prefix("saml/sp")
+				.configurationRepository(repository);
 			http.apply(configurer);
 		}
 	}
 
 	@Configuration
+	@Order(2)
 	public class AppSecurity extends WebSecurityConfigurerAdapter {
 
 		@Override

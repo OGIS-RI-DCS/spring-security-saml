@@ -44,6 +44,7 @@ public class ServiceProviderMetadataFilter extends SamlProcessingFilter {
 	public ServiceProviderMetadataFilter(RequestMatcher requestMatcher,
 										 String filename,
 										 SamlTransformer transformer) {
+		super(transformer);
 		this.requestMatcher = requestMatcher;
 		this.filename = filename;
 		this.transformer = transformer;

@@ -17,5 +17,18 @@
 
 package org.springframework.security.saml.provider.onion;
 
+import org.springframework.security.saml.saml2.Saml2Object;
+import org.springframework.util.MultiValueMap;
+
 public interface SamlWebMessage {
+
+	String MESSAGE_ATTRIBUTE = SamlWebMessage.class.getName()+".message";
+
+	Saml2Object getSamlRequest();
+
+	Saml2Object getSamlResponse();
+
+	String getRelayState();
+
+	MultiValueMap<String, String> getMessageParameters();
 }

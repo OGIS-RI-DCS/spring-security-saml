@@ -27,20 +27,24 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.saml.SamlException;
 import org.springframework.security.saml.SamlTemplateEngine;
+import org.springframework.security.saml.SamlTransformer;
+import org.springframework.security.saml.saml2.Saml2Object;
 import org.springframework.security.saml.spi.opensaml.OpenSamlVelocityEngine;
 import org.springframework.security.web.header.HeaderWriter;
 import org.springframework.security.web.header.writers.CacheControlHeadersWriter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Arrays.asList;
 import static org.springframework.http.MediaType.TEXT_HTML_VALUE;
+import static org.springframework.util.StringUtils.hasText;
 
 public abstract class SamlProcessingFilter<T extends HostedProvider> extends OncePerRequestFilter {
-	public static final String MESSAGE_ATTRIBUTE = SamlProcessingFilter.class.getName()+".message";
-	public static final String PROVIDER_ATTRIBUTE = SamlProcessingFilter.class.getName()+".provider";
 
 	private static Log logger = LogFactory.getLog(SamlProcessingFilter.class);
 
@@ -48,7 +52,10 @@ public abstract class SamlProcessingFilter<T extends HostedProvider> extends Onc
 	private SamlTemplateEngine samlTemplateEngine = new OpenSamlVelocityEngine();
 	private HeaderWriter cacheHeaderWriter = new CacheControlHeadersWriter();
 
-	protected SamlProcessingFilter() {
+	private final SamlTransformer transformer;
+
+	protected SamlProcessingFilter(SamlTransformer transformer) {
+		this.transformer = transformer;
 	}
 
 	@Override
@@ -56,23 +63,53 @@ public abstract class SamlProcessingFilter<T extends HostedProvider> extends Onc
 										  HttpServletResponse response,
 										  FilterChain filterChain)
 		throws ServletException, IOException {
-		SamlWebMessage message = getMessage(request);
+
 		T provider = getProvider(request);
 		if (provider == null) {
 			filterChain.doFilter(request, response);
 		}
 		else {
+			SamlWebMessage message = getMessage(request, provider);
 			doSamlFilter(message, provider, request, response, filterChain);
 		}
 
 	}
 
 	private T getProvider(HttpServletRequest request) {
-		return (T) request.getAttribute(PROVIDER_ATTRIBUTE);
+		return (T) request.getAttribute(HostedProvider.PROVIDER_ATTRIBUTE);
 	}
 
-	private SamlWebMessage getMessage(HttpServletRequest request) {
-		return (SamlWebMessage) request.getAttribute(MESSAGE_ATTRIBUTE);
+	private SamlWebMessage getMessage(HttpServletRequest request, T provider) {
+		SamlWebMessage result = (SamlWebMessage) request.getAttribute(SamlWebMessage.MESSAGE_ATTRIBUTE);
+		if (result == null) {
+			Saml2Object samlRequest = decode(request, provider, "SAMLRequest");
+			Saml2Object samlResponse = decode(request, provider, "SAMLResponse");
+			result = new DefaultSamlWebMessage(
+				samlRequest,
+				samlResponse,
+				request.getParameter("RelayState"),
+				new LinkedMultiValueMap<>(getMultiValueMap(request.getParameterMap()))
+			);
+			request.setAttribute(SamlWebMessage.MESSAGE_ATTRIBUTE, result);
+		}
+		return result;
+	}
+
+	private MultiValueMap<String, String> getMultiValueMap(Map<String, String[]> parameterMap) {
+		LinkedMultiValueMap<String,String> result = new LinkedMultiValueMap<>();
+		parameterMap.entrySet().stream().forEach(
+			e -> result.put(e.getKey(), asList(e.getValue()))
+		);
+		return result;
+	}
+
+	private Saml2Object decode(HttpServletRequest request, T provider, String parameter) {
+		String p = request.getParameter(parameter);
+		if (hasText(p)) {
+			String xml = transformer.samlDecode(p, "GET".equalsIgnoreCase(request.getMethod()));
+			return transformer.fromXml(xml, null, provider.getConfiguration().getKeys());
+		}
+		return null;
 	}
 
 	protected abstract void doSamlFilter(SamlWebMessage message,
@@ -122,5 +159,9 @@ public abstract class SamlProcessingFilter<T extends HostedProvider> extends Onc
 	public SamlProcessingFilter setSamlTemplateEngine(SamlTemplateEngine samlTemplateEngine) {
 		this.samlTemplateEngine = samlTemplateEngine;
 		return this;
+	}
+
+	public SamlTransformer getTransformer() {
+		return transformer;
 	}
 }

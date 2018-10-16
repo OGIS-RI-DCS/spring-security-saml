@@ -21,13 +21,15 @@ import java.time.Clock;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -36,10 +38,10 @@ import org.springframework.security.saml.SamlTransformer;
 import org.springframework.security.saml.helper.SamlTestObjectHelper;
 import org.springframework.security.saml.key.KeyType;
 import org.springframework.security.saml.key.SimpleKey;
-import org.springframework.security.saml.provider.registration.SamlServerConfiguration;
-import org.springframework.security.saml.provider.provisioning.SamlProviderProvisioning;
-import org.springframework.security.saml.provider.service.ServiceProviderService;
+import org.springframework.security.saml.provider.config.SamlConfigurationRepository;
 import org.springframework.security.saml.provider.registration.HostedServiceProviderConfiguration;
+import org.springframework.security.saml.provider.registration.SamlServerConfiguration;
+import org.springframework.security.saml.provider.service.ServiceProviderService;
 import org.springframework.security.saml.saml2.authentication.Assertion;
 import org.springframework.security.saml.saml2.authentication.AuthenticationRequest;
 import org.springframework.security.saml.saml2.authentication.LogoutRequest;
@@ -55,10 +57,10 @@ import org.springframework.security.saml.spi.DefaultSamlAuthentication;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import sample.config.StaticSpConfigurationRepository;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -82,10 +84,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class SimpleServiceProviderBootTest {
+public class StarterServiceProviderBootTest {
 
 	@Autowired
-	Clock samlTime;
+	ApplicationContext context;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -94,47 +96,37 @@ public class SimpleServiceProviderBootTest {
 	private SamlTransformer transformer;
 
 	@Autowired
-	private SamlProviderProvisioning<ServiceProviderService> provisioning;
-
-	@Autowired
 	private SamlMetadataCache cache;
 
 	private String idpEntityId;
 
-	private String spBaseUrl;
+	private static String spBaseUrl = "http://localhost";
 
-	@Autowired
-	@Qualifier("spSamlServerConfiguration")
 	private SamlServerConfiguration config;
 
 	private MockHttpServletRequest defaultRequest;
 	private SamlTestObjectHelper helper;
 
+	@Autowired
+	private Clock samlTime;
+
 
 	@BeforeEach
 	void setUp() {
 		idpEntityId = "http://simplesaml-for-spring-saml.cfapps.io/saml2/idp/metadata.php";
-		spBaseUrl = "http://localhost";
 		defaultRequest = new MockHttpServletRequest("GET", spBaseUrl);
 		helper = new SamlTestObjectHelper(samlTime);
-		if (1 / 1 == 1) {
-			throw new UnsupportedOperationException();
-//			config.getServiceProvider().setBasePath(spBaseUrl);
-		}
-	}
-
-	@AfterEach
-	public void reset() {
-		if (1 / 1 == 1) {
-			throw new UnsupportedOperationException();
-//			config.getServiceProvider().setSingleLogoutEnabled(true);
-		}
+		config = context.getBean(SamlConfigurationRepository.class).getDefaultServerConfiguration();
 	}
 
 	@SpringBootConfiguration
 	@EnableAutoConfiguration
 	@ComponentScan(basePackages = "sample")
 	public static class SpringBootApplicationTestConfig {
+		@Bean
+		SamlConfigurationRepository<HttpServletRequest> configurationRepository() {
+			return new StaticSpConfigurationRepository(spBaseUrl, true, true);
+		}
 	}
 
 	@Test
@@ -148,9 +140,9 @@ public class SimpleServiceProviderBootTest {
 		assertTrue(sp.isSignRequests());
 		SimpleKey activeKey = sp.getKeys().get(0);
 		assertNotNull(activeKey);
-		List<SimpleKey> standByKeys = sp.getKeys().subList(1,sp.getKeys().size());
-		assertNotNull(standByKeys);
-		assertThat(standByKeys.size(), equalTo(2));
+		List<SimpleKey> otherKeys = sp.getKeys().subList(1,sp.getKeys().size());
+		assertNotNull(otherKeys);
+		assertThat(otherKeys.size(), equalTo(1));
 	}
 
 	@Test
@@ -193,7 +185,7 @@ public class SimpleServiceProviderBootTest {
 
 	@Test
 	public void processResponse() throws Exception {
-		ServiceProviderService provider = provisioning.getHostedProvider();
+		ServiceProviderService provider = null;//provisioning.getHostedProvider();
 		if (1 / 1 == 1) {
 			throw new UnsupportedOperationException();
 		}
@@ -225,7 +217,7 @@ public class SimpleServiceProviderBootTest {
 			throw new UnsupportedOperationException();
 		}
 //		config.getServiceProvider().setWantAssertionsSigned(false);
-		ServiceProviderService provider = provisioning.getHostedProvider();
+		ServiceProviderService provider = null;//provisioning.getHostedProvider();
 		String idpEntityId = "http://simplesaml-for-spring-saml.cfapps.io/saml2/idp/metadata.php";
 		AuthenticationRequest authn = getAuthenticationRequest();
 		IdentityProviderMetadata idp = provider.getRemoteProvider(idpEntityId);
@@ -250,7 +242,7 @@ public class SimpleServiceProviderBootTest {
 
 	@Test
 	public void initiateLogout() throws Exception {
-		ServiceProviderService provider = provisioning.getHostedProvider();
+		ServiceProviderService provider = null; //provisioning.getHostedProvider();
 		AuthenticationRequest authn = getAuthenticationRequest();
 		IdentityProviderMetadata idp = provider.getRemoteProvider(idpEntityId);
 		ServiceProviderMetadata sp = provider.getMetadata();
@@ -285,7 +277,7 @@ public class SimpleServiceProviderBootTest {
 
 	@Test
 	public void receiveLogoutRequest() throws Exception {
-		ServiceProviderService provider = provisioning.getHostedProvider();
+		ServiceProviderService provider = null;//provisioning.getHostedProvider();
 		AuthenticationRequest authn = getAuthenticationRequest();
 		IdentityProviderMetadata idp = provider.getRemoteProvider(idpEntityId);
 		ServiceProviderMetadata sp = provider.getMetadata();
@@ -332,7 +324,7 @@ public class SimpleServiceProviderBootTest {
 
 	@Test
 	public void receiveLogoutResponse() throws Exception {
-		ServiceProviderService provider = provisioning.getHostedProvider();
+		ServiceProviderService provider = null;//provisioning.getHostedProvider();
 		AuthenticationRequest authn = getAuthenticationRequest();
 		IdentityProviderMetadata idp = provider.getRemoteProvider(idpEntityId);
 		ServiceProviderMetadata sp = provider.getMetadata();

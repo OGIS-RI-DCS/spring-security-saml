@@ -20,22 +20,37 @@ package sample.config;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.saml.key.KeyType;
 import org.springframework.security.saml.key.SimpleKey;
 import org.springframework.security.saml.provider.config.NetworkConfiguration;
 import org.springframework.security.saml.provider.config.SamlConfigurationRepository;
-import org.springframework.security.saml.provider.registration.SamlServerConfiguration;
 import org.springframework.security.saml.provider.registration.ExternalIdentityProviderConfiguration;
 import org.springframework.security.saml.provider.registration.HostedServiceProviderConfiguration;
+import org.springframework.security.saml.provider.registration.SamlServerConfiguration;
 import org.springframework.security.saml.saml2.metadata.NameId;
 import org.springframework.security.saml.saml2.signature.AlgorithmMethod;
 import org.springframework.security.saml.saml2.signature.DigestMethod;
 
 import static java.util.Arrays.asList;
 
-@Configuration
 public class StaticSpConfigurationRepository implements SamlConfigurationRepository<HttpServletRequest> {
+
+	private final String basePath;
+	private final boolean singleLogoutEnabled;
+	private final boolean requireSignagures;
+
+	public StaticSpConfigurationRepository(String basePath,
+										   boolean singleLogoutEnabled,
+										   boolean requireSignagures) {
+		this.basePath = basePath;
+		this.singleLogoutEnabled = singleLogoutEnabled;
+		this.requireSignagures = requireSignagures;
+	}
+
+	public StaticSpConfigurationRepository() {
+		this(null, true, true);
+	}
+
 	@Override
 	public SamlServerConfiguration getServerConfiguration(HttpServletRequest request) {
 		return getDefaultServerConfiguration();
@@ -53,19 +68,19 @@ public class StaticSpConfigurationRepository implements SamlConfigurationReposit
 	private HostedServiceProviderConfiguration getServiceProvider() {
 		return new HostedServiceProviderConfiguration(
 			"/saml/sp",
-			null,
-			"sample-sp",
-			null,
-			true,
+			basePath,
+			"boot-sample-sp",
+			"spring.security.saml.sp.id",
+			requireSignagures,
 			null,
 			getSamlKeys(),
 			AlgorithmMethod.RSA_SHA256,
 			DigestMethod.SHA256,
-			asList(NameId.PERSISTENT, NameId.EMAIL),
-			true,
+			asList(NameId.PERSISTENT, NameId.EMAIL, NameId.UNSPECIFIED),
+			singleLogoutEnabled,
 			asList(getRemoteIdp()),
-			true,
-			true
+			requireSignagures,
+			requireSignagures
 		);
 	}
 

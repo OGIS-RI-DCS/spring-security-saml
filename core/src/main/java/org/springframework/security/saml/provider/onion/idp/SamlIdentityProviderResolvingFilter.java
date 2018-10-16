@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import static org.springframework.security.saml.provider.onion.SamlProcessingFilter.PROVIDER_ATTRIBUTE;
+import static org.springframework.security.saml.provider.onion.HostedProvider.PROVIDER_ATTRIBUTE;
 
 public class SamlIdentityProviderResolvingFilter extends OncePerRequestFilter {
 
