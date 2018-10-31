@@ -19,6 +19,7 @@ package sample;
 
 import java.time.Clock;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -37,6 +38,7 @@ import org.springframework.security.saml.spi.opensaml.OpenSamlImplementation;
 import org.springframework.security.saml.spi.opensaml.OpenSamlVelocityEngine;
 
 import sample.proof_of_concept.StaticServiceProviderResolver;
+import sample.proof_of_concept.onelogin.OneLoginSamlImplementation;
 import sample.proof_of_concept.support_saved_for_later.ServiceProviderMetadataResolver;
 
 import static sample.proof_of_concept.SamlServiceProviderDsl.serviceProvider;
@@ -44,12 +46,23 @@ import static sample.proof_of_concept.SamlServiceProviderDsl.serviceProvider;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
+	private final ApplicationContext context;
+
+	public SecurityConfiguration(ApplicationContext context) {
+		this.context = context;
+	}
+
 	@Configuration
 	public static class SamlPropertyConfiguration extends SamlBootConfiguration {}
 
 	@Bean
 	public SpringSecuritySaml samlImplementation() {
-		return new OpenSamlImplementation(Clock.systemUTC()).init();
+		if ("onelogin".equals(context.getEnvironment().getProperty("saml-implementation"))) {
+			return new OneLoginSamlImplementation(Clock.systemUTC()).init();
+		}
+		else {
+			return new OpenSamlImplementation(Clock.systemUTC()).init();
+		}
 	}
 
 	@Bean

@@ -38,6 +38,7 @@ dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	compile 'org.springframework.boot:spring-boot-starter-web'
 	compile 'org.thymeleaf.extras:thymeleaf-extras-springsecurity4'
+	compile 'com.onelogin:java-saml:2.3.0'
 
 	testCompile 'org.springframework.boot:spring-boot-starter-test'
 	testCompile 'org.springframework.security:spring-security-test'

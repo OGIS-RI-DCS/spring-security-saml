@@ -11,6 +11,8 @@ logging:
     org.springframework.security.saml: DEBUG
     sample: DEBUG
 
+#saml-implementation: onelogin
+
 spring:
   thymeleaf:
     cache: false
